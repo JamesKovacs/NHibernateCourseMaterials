@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Customer.cs" />
+    <Compile Include="Animal.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Order.cs" />
@@ -68,6 +69,7 @@
     <EmbeddedResource Include="Customer.hbm.xml" />
     <EmbeddedResource Include="Order.hbm.xml" />
     <EmbeddedResource Include="LineItem.hbm.xml" />
+    <EmbeddedResource Include="Animals.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

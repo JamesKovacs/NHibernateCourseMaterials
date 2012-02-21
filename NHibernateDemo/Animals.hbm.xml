@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernateDemo"
+                   namespace="NHibernateDemo">
+  <class name="Animal" abstract="true">
+    <id name="Id">
+      <generator class="guid.comb"/>
+    </id>
+    <property name="Name"/>
+  </class>
+  <joined-subclass name="Mammal" abstract="true" extends="Animal">
+    <key column="AnimalId" />
+    <property name="HairsPerSquareCentimeter"/>
+  </joined-subclass>
+  <joined-subclass name="Dog" extends="Mammal">
+    <key column="AnimalId" />
+    <property name="BarksPerSecond"/>
+  </joined-subclass>
+<!--
+  <class name="Animal" abstract="true">
+    <id name="Id">
+      <generator class="guid.comb"/>
+    </id>
+    <discriminator column="AnimalType" type="string"/>
+    <property name="Name"/>
+  </class>
+  <subclass name="Mammal" abstract="true" extends="Animal">
+    <property name="HairsPerSquareCentimeter"/>
+  </subclass>
+  <subclass name="Dog" extends="Mammal" discriminator-value="DOG">
+    <property name="BarksPerSecond"/>
+  </subclass>
+-->
+</hibernate-mapping>

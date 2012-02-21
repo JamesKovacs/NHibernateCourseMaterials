@@ -7,6 +7,7 @@ using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Impl;
+using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
 
 namespace NHibernateDemo
@@ -34,7 +35,21 @@ namespace NHibernateDemo
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                new Dog()
+                var dog = new Dog {Name = "Rover"};
+                session.Save(dog);
+                tx.Commit();
+            }
+
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var query = from animal in session.Query<Animal>()
+                            select animal;
+                var animals = query.ToList();
+                foreach (var animal in animals)
+                {
+                    Console.WriteLine(animal);
+                }
                 tx.Commit();
             }
         }
