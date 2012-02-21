@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
-  <session-factory>
+  <session-factory name="MedAssets">
+<!--    <property name="show_sql">true</property>-->
   </session-factory> 
 </hibernate-configuration>
