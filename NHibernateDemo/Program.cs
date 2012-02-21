@@ -6,6 +6,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
+using NHibernate.Impl;
 using NHibernate.Tool.hbm2ddl;
 
 namespace NHibernateDemo
@@ -19,10 +20,73 @@ namespace NHibernateDemo
         {
             InitializeNHibernate();
             ExportDbSchema();
-            MappingGotchas();
+//            MappingGotchas();
 //            ImmutableData();
+//            Relationships();
+            Inheritance();
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void Inheritance()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                new Dog()
+                tx.Commit();
+            }
+        }
+
+        static void Relationships()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var customer = CreateCustomer();
+                customer.AddOrder(CreateOrder());
+                customer.AddOrder(CreateOrder());
+                customer.AddOrder(CreateOrder());
+                customer.AddOrder(CreateOrder());
+                customer.AddOrder(CreateOrder());
+                session.Save(customer);
+                tx.Commit();
+            }
+
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var customer = session.QueryOver<Customer>()
+//                                      .Fetch(x => x.Orders).Eager
+                                      .List<Customer>().First();
+                foreach (var order in customer.Orders)
+                {
+                    Console.WriteLine("Order {0}", order.OrderedOn);
+                    foreach (var lineItem in order.LineItems)
+                    {
+                        Console.WriteLine(lineItem);
+                    }
+                }
+                tx.Commit();
+            }
+        }
+
+        static Order CreateOrder()
+        {
+            var order = new Order
+                            {
+                                OrderedOn = DateTimeOffset.Now,
+                                LineItems =
+                                    {
+                                        new LineItem {ProductName = "Product1", Quantity = 1},
+                                        new LineItem {ProductName = "Product2", Quantity = 9},
+                                        new LineItem {ProductName = "Product3", Quantity = 3},
+                                        new LineItem {ProductName = "Product4", Quantity = 2},
+                                    }
+                            };
+            return order;
         }
 
         static void MappingGotchas()
@@ -32,19 +96,7 @@ namespace NHibernateDemo
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var customer = new Customer
-                                   {
-                                       Name = "John Smith",
-                                       MemberSince = DateTimeOffset.Now,
-                                       Rating = 2d/3,
-                                       Address = new Location
-                                                     {
-                                                         Street = "123 Somewhere Street",
-                                                         City = "Nowhere",
-                                                         Province = "Alberta",
-                                                         Country = "Canada"
-                                                     }
-                                   };
+                var customer = CreateCustomer();
                 Console.WriteLine("Original:");
                 Console.WriteLine(customer);
                 session.Save(customer);
@@ -67,11 +119,30 @@ namespace NHibernateDemo
             }
         }
 
-        static void ImmutableData() {
+        static Customer CreateCustomer()
+        {
+            var customer = new Customer
+                               {
+                                   Name = "John Smith",
+                                   MemberSince = DateTimeOffset.Now,
+                                   Rating = 2d/3,
+                                   Address = new Location
+                                                 {
+                                                     Street = "123 Somewhere Street",
+                                                     City = "Nowhere",
+                                                     Province = "Alberta",
+                                                     Country = "Canada"
+                                                 }
+                               };
+            return customer;
+        }
+
+        static void ImmutableData()
+        {
             cfg.GetClassMapping(typeof (ShippingMethod)).IsMutable = true;
 
             sessionFactory = cfg.BuildSessionFactory();
-            using(var session = sessionFactory.OpenSession())
+            using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
                 var shippingMethod = new ShippingMethod {Name = "Priority"};
@@ -79,7 +150,7 @@ namespace NHibernateDemo
                 tx.Commit();
             }
 
-            using(var session = sessionFactory.OpenSession())
+            using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
                 var shippingMethod = session.QueryOver<ShippingMethod>().List().First();
@@ -101,7 +172,6 @@ namespace NHibernateDemo
                                             x.Dialect<MsSql2008Dialect>();
                                             x.IsolationLevel = IsolationLevel.ReadCommitted;
                                             x.Timeout = 10;
-                                            x.LogSqlInConsole = true;
                                         });
             cfg.SessionFactoryName("MedAssets");
             cfg.SessionFactory().GenerateStatistics();
@@ -111,7 +181,7 @@ namespace NHibernateDemo
         static void ExportDbSchema()
         {
             var exporter = new SchemaExport(cfg);
-            exporter.Execute(true, true, false);
+            exporter.Execute(false, true, false);
 
 //            var updater = new SchemaUpdate(cfg);
 //            updater.Execute(true, true);
@@ -124,4 +194,3 @@ namespace NHibernateDemo
         public virtual string Name { get; set; }
     }
 }
-

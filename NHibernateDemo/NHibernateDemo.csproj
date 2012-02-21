@@ -53,7 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Customer.cs" />
+    <Compile Include="LineItem.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -64,6 +66,8 @@
   <ItemGroup>
     <EmbeddedResource Include="ShippingMethod.hbm.xml" />
     <EmbeddedResource Include="Customer.hbm.xml" />
+    <EmbeddedResource Include="Order.hbm.xml" />
+    <EmbeddedResource Include="LineItem.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

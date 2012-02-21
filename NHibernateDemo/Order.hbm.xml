@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernateDemo"
+                   namespace="NHibernateDemo">
+  <class name="Order" table="`Order`">
+    <id name="Id">
+      <generator class="guid.comb"/>
+    </id>
+    <property name="OrderedOn"/>
+    <many-to-one name="Customer" class="Customer" column="CustomerId" cascade="save-update"/>
+    <set name="LineItems" cascade="all-delete-orphan">
+      <key column="OrderId"/>
+      <one-to-many class="LineItem"/>
+    </set>
+  </class>
+</hibernate-mapping>
