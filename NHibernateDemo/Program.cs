@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using FluentNHibernate.Testing;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NHibernate;
 using NHibernate.Cfg;
@@ -24,9 +25,24 @@ namespace NHibernateDemo
 //            MappingGotchas();
 //            ImmutableData();
 //            Relationships();
-            Inheritance();
+//            Inheritance();
+            PersistenceSpecs();
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void PersistenceSpecs()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            {
+                new PersistenceSpecification<Customer>(session)
+                    .CheckProperty(x => x.Name, "Bob Smith")
+                    .CheckProperty(x => x.IsGoldMember, true)
+                    .CheckProperty(x => x.MemberSince, DateTimeOffset.Now)
+                    .CheckProperty(x => x.Notes, "Lorem ipsum")
+                    .VerifyTheMappings();
+            }
         }
 
         static void Inheritance()
