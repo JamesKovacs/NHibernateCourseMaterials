@@ -5,6 +5,7 @@
 # *.[oa]
 # *~
 _ReSharper.*
+*.dotCover
 bin
 obj
 *.cache
