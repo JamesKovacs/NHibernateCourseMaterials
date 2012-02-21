@@ -4,11 +4,18 @@
                    namespace="NHibernateDemo">
   <class name="Customer">
     <id name="Id">
-      <generator class="native"/>
+      <generator class="guid.comb"/>
     </id>
-    <property name="Name" length="100"/>
+    <property name="Name"/>
     <property name="MemberSince"/>
     <property name="IsGoldMember"/>
     <property name="Rating"/>
+    <property name="Notes" length="10000"/>
+    <component name="Address">
+      <property name="Street"/>
+      <property name="City"/>
+      <property name="Province"/>
+      <property name="Country"/>
+    </component>
   </class>
 </hibernate-mapping>

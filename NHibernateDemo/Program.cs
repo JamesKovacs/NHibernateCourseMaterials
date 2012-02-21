@@ -4,6 +4,7 @@ using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
+using NHibernate.Tool.hbm2ddl;
 
 namespace NHibernateDemo
 {
@@ -22,6 +23,7 @@ namespace NHibernateDemo
                                             x.Dialect<MsSql2008Dialect>();
                                             x.IsolationLevel = IsolationLevel.ReadCommitted;
                                             x.Timeout = 10;
+                                            x.LogSqlInConsole = true;
                                         });
             cfg.SessionFactoryName("MedAssets");
             cfg.SessionFactory().GenerateStatistics();
@@ -29,14 +31,30 @@ namespace NHibernateDemo
 
 //            cfg.GetClassMapping(typeof (ShippingMethod)).IsMutable = true;
 
-            int newId;
+            var exporter = new SchemaExport(cfg);
+            exporter.Execute(true, true, false);
+
+//            var updater = new SchemaUpdate(cfg);
+//            updater.Execute(true, true);
+
+            Guid newId;
             var sessionFactory = cfg.BuildSessionFactory();
             using(var session = sessionFactory.OpenSession())
             using(var tx = session.BeginTransaction())
             {
-                var customer = new Customer { Name = "John Smith", 
-                    MemberSince = DateTimeOffset.Now, 
-                    Rating=2d/3};
+                var customer = new Customer
+                {
+                    Name = "John Smith",
+                    MemberSince = DateTimeOffset.Now,
+                    Rating = 2d / 3,
+                    Address = new Location
+                    {
+                        Street = "123 Somewhere Street",
+                        City = "Nowhere",
+                        Province = "Alberta",
+                        Country = "Canada"
+                    }
+                };
                 Console.WriteLine("Original:");
                 Console.WriteLine(customer);
                 session.Save(customer);
@@ -58,25 +76,6 @@ namespace NHibernateDemo
             }
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
-        }
-    }
-
-    public class Customer
-    {
-        public Customer()
-        {
-            MemberSince = new DateTime(2000, 1, 1);
-        }
-
-        public virtual int Id { get; set; }
-        public virtual string Name { get; set; }
-        public virtual DateTimeOffset MemberSince { get; set; }
-        public virtual bool IsGoldMember { get; set; }
-        public virtual double Rating { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format("Id: {0}, Name: {1}, MemberSince: {2}, IsGoldMember: {3}, Rating: {4}", Id, Name, MemberSince, IsGoldMember, Rating);
         }
     }
 
