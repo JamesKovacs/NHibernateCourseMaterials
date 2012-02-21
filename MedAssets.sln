@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernateDemo", "NHibernateDemo\NHibernateDemo.csproj", "{F7CF1EDF-9BE3-47BE-8B8C-2ECCC85FDB7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorks", "AdventureWorks\AdventureWorks.csproj", "{F2F6A709-6E65-4112-902F-FCEE5C9292F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{F7CF1EDF-9BE3-47BE-8B8C-2ECCC85FDB7C}.Debug|x86.Build.0 = Debug|x86
 		{F7CF1EDF-9BE3-47BE-8B8C-2ECCC85FDB7C}.Release|x86.ActiveCfg = Release|x86
 		{F7CF1EDF-9BE3-47BE-8B8C-2ECCC85FDB7C}.Release|x86.Build.0 = Release|x86
+		{F2F6A709-6E65-4112-902F-FCEE5C9292F2}.Debug|x86.ActiveCfg = Debug|x86
+		{F2F6A709-6E65-4112-902F-FCEE5C9292F2}.Debug|x86.Build.0 = Debug|x86
+		{F2F6A709-6E65-4112-902F-FCEE5C9292F2}.Release|x86.ActiveCfg = Release|x86
+		{F2F6A709-6E65-4112-902F-FCEE5C9292F2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
