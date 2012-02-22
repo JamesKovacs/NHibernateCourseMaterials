@@ -36,11 +36,25 @@ namespace NHibernateDemo
             sessionFactory = cfg.BuildSessionFactory();
             using (var session = sessionFactory.OpenSession())
             {
+                new PersistenceSpecification<LineItem>(session)
+                    .CheckProperty(x => x.ProductName, "Product1")
+                    .CheckProperty(x => x.Quantity, 42)
+                    .VerifyTheMappings();
+
+                new PersistenceSpecification<Order>(session)
+                    .CheckProperty(x => x.OrderedOn, DateTimeOffset.Now)
+//                    .CheckReference(x => x.Customer, CreateCustomer())
+//                    .CheckList(x => x.LineItems, new[] {new LineItem()})
+                    .VerifyTheMappings();
+                
                 new PersistenceSpecification<Customer>(session)
                     .CheckProperty(x => x.Name, "Bob Smith")
                     .CheckProperty(x => x.IsGoldMember, true)
                     .CheckProperty(x => x.MemberSince, DateTimeOffset.Now)
                     .CheckProperty(x => x.Notes, "Lorem ipsum")
+                    .CheckProperty(x => x.Rating, 3.1415)
+//                    .CheckProperty(x => x.Address, CreateAddress())
+//                    .CheckList(x => x.Orders, new[]{CreateOrder(), CreateOrder()})
                     .VerifyTheMappings();
             }
         }
@@ -157,15 +171,20 @@ namespace NHibernateDemo
                                    Name = "John Smith",
                                    MemberSince = DateTimeOffset.Now,
                                    Rating = 2d/3,
-                                   Address = new Location
-                                                 {
-                                                     Street = "123 Somewhere Street",
-                                                     City = "Nowhere",
-                                                     Province = "Alberta",
-                                                     Country = "Canada"
-                                                 }
+                                   Address = CreateAddress()
                                };
             return customer;
+        }
+
+        static Location CreateAddress()
+        {
+            return new Location
+                       {
+                           Street = "123 Somewhere Street",
+                           City = "Nowhere",
+                           Province = "Alberta",
+                           Country = "Canada"
+                       };
         }
 
         static void ImmutableData()
