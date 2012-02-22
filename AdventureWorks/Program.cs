@@ -34,14 +34,14 @@ namespace AdventureWorks
 //                CriteriaQueryOver(session);
 //                Linq(session);
 
-                Paging(session);
-                MultiCriteria(session);
-                MultiQuery(session);
-                Futures(session);
+//                Paging(session);
+//                MultiCriteria(session);
+//                MultiQuery(session);
+//                Futures(session);
 //                Aggregation(session);
-                CollectionFilters(session);
-                ExtraLazyCollections(session);
-                LazyProperties(session);
+//                CollectionFilters(session);
+//                ExtraLazyCollections(session);
+//                LazyProperties(session);
                 tx.Commit();
             }
 
@@ -72,18 +72,23 @@ namespace AdventureWorks
 //                                where c.CustomerAddresses.Count > 0
 //                                select c;
 //                Console.WriteLine(customers.Count());
-            var stats = session.CreateQuery("select c.FirstName, count(c) from Customer c group by c.FirstName having count(c) > 10 order by count(c) asc")
-                .List<object[]>();
-//                var stats = from c in session.Query<Customer>()
-//                            group c by c.FirstName into grp
-//                            where grp.Count() > 10
-//                            orderby grp.Count() ascending 
-//                            select new{grp.Key, Count=grp.Count()};
-            foreach (var stat in stats)
-            {
-                Console.WriteLine("{0}: {1}", stat[0], stat[1]);
+
+//            var stats = from c in session.Query<Customer>()
+//                        group c by c.FirstName into grp
+//                        where grp.Count() > 10
+//                        orderby grp.Count() ascending 
+//                        select new{grp.Key, Count=grp.Count()};
+//            foreach (var stat in stats)
+//            {
 //                    Console.WriteLine("{0}: {1}", stat.Key, stat.Count);
-            }
+//            }
+
+//            var stats = session.CreateQuery("select c.FirstName, count(c) from Customer c group by c.FirstName having count(c) > 10 order by count(c) asc")
+//                                .List<object[]>();
+//            foreach (var stat in stats)
+//            {
+//                Console.WriteLine("{0}: {1}", stat[0], stat[1]);
+//            }
         }
         
         static void CollectionFilters(ISession session)
