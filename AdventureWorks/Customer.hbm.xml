@@ -6,7 +6,38 @@
     <id name="Id" column="CustomerID">
       <generator class="identity"/>
     </id>
+    <property name="Title"/>
     <property name="FirstName"/>
+    <property name="MiddleName"/>
     <property name="LastName"/>
+    <property name="Suffix"/>
+    <property name="CompanyName"/>
+    <property name="SalesPerson"/>
+    <property name="EmailAddress"/>
+    <property name="Phone"/>
+    <set name="CustomerAddresses" cascade="all-delete-orphan">
+      <key column="CustomerID" />
+      <one-to-many class="CustomerAddress"/>
+    </set>
+  </class>
+
+  <class name="CustomerAddress" schema="SalesLT">
+    <id name="Id" column="rowguid">
+      <generator class="guid"/>
+    </id>
+    <many-to-one name="Address" column="AddressID" cascade="all"/>
+    <property name="AddressType"/>
+  </class>
+
+  <class name="Address" schema="SalesLT">
+    <id name="Id" column="AddressID">
+      <generator class="identity"/>
+    </id>
+    <property name="AddressLine1"/>
+    <property name="AddressLine2"/>
+    <property name="City"/>
+    <property name="StateProvince"/>
+    <property name="CountryRegion"/>
+    <property name="PostalCode"/>
   </class>
 </hibernate-mapping>

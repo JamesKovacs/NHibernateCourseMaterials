@@ -16,7 +16,7 @@ namespace AdventureWorks
     {
         static Configuration cfg;
         static ISessionFactory sessionFactory;
-
+        
         static void Main()
         {
             InitializeNHibernate();
@@ -25,59 +25,83 @@ namespace AdventureWorks
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-//                var customer = session.QueryOver<Customer>().List().First();
-//                var customer = session.Get<Customer>(1);
-//                HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
-//                Console.WriteLine(customer.FirstName);
-//                HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
-//                var customer = session.Load<Customer>(1);
-//                Console.WriteLine(customer.Id);
-//                var order = new Order();
-//                order.Customer = session.Load<Customer>(1);
-//                session.Save(order);
-                // HQL
-//                var query = session.CreateQuery("select c from Customer c where c.LastName like 'Sm%'");
-//                var customers = query.List<Customer>();
-//                foreach (var customer in customers)
-//                {
-//                    Console.WriteLine(customer);
-//                }
-                // Criteria
-//                var criteria = session.CreateCriteria<Customer>()
-//                                      .Add(Restrictions.Eq("LastName", "Gee"));
-//                var customers = criteria.List<Customer>();
-//                foreach (var customer in customers)
-//                {
-//                    Console.WriteLine(customer);
-//                }
-//                var criteria = session.QueryOver<Customer>()
-//                                        .Where(x => x.LastName == "Gee");
-//                var customers = criteria.List<Customer>();
-//                foreach (var customer in customers)
-//                {
-//                    Console.WriteLine(customer);
-//                }
-                // LINQ
-//                var query = session.Query<Customer>().Where(x => x.LastName == "Gee");
-                var gee = session.Get<Customer>(1);
-                Console.WriteLine(gee);
-                var gee2 = session.Get<Customer>(29773);
-                Console.WriteLine(gee2);
-                var query = from c in session.Query<Customer>()
-                            where c.LastName == "Gee"
-                            select c;
-                var customers = query.ToList();
-                foreach (var customer in customers)
-                {
-                    Console.WriteLine(customer);
-                    Console.WriteLine("Is Gee? {0}", customer == gee);
-                    Console.WriteLine("Is Gee2? {0}", customer == gee2);
-                }
+//                GetVsLoad(session);
+//                Hql(session);
+//                Criteria(session);
+//                CriteriaQueryOver(session);
+//                Linq(session);
+//                var customers = session.CreateQuery("from Customer c where size(c.CustomerAddresses) > 0").List<Customer>();
+                var customers = from c in session.Query<Customer>()
+                                where c.CustomerAddresses.Count > 0
+                                select c;
+                Console.WriteLine(customers.First().CustomerAddresses.Count());
+//                Console.WriteLine(customer.CustomerAddresses.First().AddressType);
                 tx.Commit();
             }
 
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void GetVsLoad(ISession session)
+        {
+            var customer = session.Get<Customer>(1);
+//            var customer = session.Load<Customer>(1);
+            HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
+            Console.WriteLine(customer.Id);
+            HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
+            Console.WriteLine(customer.FirstName);
+        }
+
+        static void Hql(ISession session)
+        {
+            var query = session.CreateQuery("select c from Customer c where c.LastName like 'Sm%'");
+            var customers = query.List<Customer>();
+            foreach (var customer in customers)
+            {
+                Console.WriteLine(customer);
+            }
+        }
+
+        static void Criteria(ISession session)
+        {
+            var criteria = session.CreateCriteria<Customer>()
+                .Add(Restrictions.Eq("LastName", "Gee"));
+            var customers = criteria.List<Customer>();
+            foreach (var customer in customers)
+            {
+                Console.WriteLine(customer);
+            }
+        }
+
+        static void CriteriaQueryOver(ISession session)
+        {
+            var criteria = session.QueryOver<Customer>()
+                .Where(x => x.LastName == "Gee");
+            var customers = criteria.List<Customer>();
+            foreach (var customer in customers)
+            {
+                Console.WriteLine(customer);
+            }
+        }
+
+        static void Linq(ISession session)
+        {
+//            var query = session.Query<Customer>().Where(x => x.LastName == "Gee");
+            var gee = session.Get<Customer>(1);
+            Console.WriteLine(gee);
+            var gee2 = session.Get<Customer>(29773);
+            Console.WriteLine(gee2);
+            var query = from c in session.Query<Customer>()
+                        where c.LastName == "Gee"
+                        select c;
+            var customers = query.ToList();
+            foreach (var customer in customers)
+            {
+                Console.WriteLine(customer);
+                Console.WriteLine("Is Gee? {0}", customer == gee);
+                Console.WriteLine("Is Gee2? {0}", customer == gee2);
+            }
         }
 
 //        public class Order
