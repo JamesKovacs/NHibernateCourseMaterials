@@ -6,6 +6,7 @@
     <id name="Id">
       <generator class="guid.comb"/>
     </id>
+    <property name="Title"/>
     <property name="Name"/>
     <property name="MemberSince"/>
     <property name="IsGoldMember"/>
@@ -21,5 +22,7 @@
       <key column="CustomerId"/>
       <one-to-many class="Order"/>
     </set>
+<!--    <property name="LastOrder" formula="select top 1 o from [Order] o where o.CustomerId = Id order by o.OrderedOn desc"/>-->
+<!--    <property name="OrderCount" formula="select count(*) from [Order] o where o.CustomerId = Id"/>-->
   </class>
 </hibernate-mapping>

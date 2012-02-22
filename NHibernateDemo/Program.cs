@@ -43,17 +43,18 @@ namespace NHibernateDemo
 
                 new PersistenceSpecification<Order>(session)
                     .CheckProperty(x => x.OrderedOn, DateTimeOffset.Now)
-//                    .CheckReference(x => x.Customer, CreateCustomer())
-//                    .CheckList(x => x.LineItems, new[] {new LineItem()})
+                    .CheckReference(x => x.Customer, CreateCustomer())
+                    .CheckList(x => x.LineItems, new[] {new LineItem()})
                     .VerifyTheMappings();
                 
                 new PersistenceSpecification<Customer>(session)
                     .CheckProperty(x => x.Name, "Bob Smith")
+                    .CheckProperty(x => x.Title, "Mr.")
                     .CheckProperty(x => x.IsGoldMember, true)
                     .CheckProperty(x => x.MemberSince, DateTimeOffset.Now)
                     .CheckProperty(x => x.Notes, "Lorem ipsum")
                     .CheckProperty(x => x.Rating, 3.1415)
-//                    .CheckProperty(x => x.Address, CreateAddress())
+                    .CheckProperty(x => x.Address, CreateAddress())
 //                    .CheckList(x => x.Orders, new[]{CreateOrder(), CreateOrder()})
                     .VerifyTheMappings();
             }
