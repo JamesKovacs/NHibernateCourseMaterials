@@ -32,7 +32,7 @@ namespace NHibernateDemo
 
         public override string ToString()
         {
-            return string.Format("Id: {0}, Name: {1}", Id, Name);
+            return string.Format("Id: {0}, FullName: {1}", Id, Name);
         }
     }
 }

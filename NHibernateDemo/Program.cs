@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Testing;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NHibernate;
@@ -48,7 +49,7 @@ namespace NHibernateDemo
                     .VerifyTheMappings();
                 
                 new PersistenceSpecification<Customer>(session)
-                    .CheckProperty(x => x.Name, "Bob Smith")
+                    .CheckProperty(x => x.FullName, "Bob Smith")
                     .CheckProperty(x => x.Title, "Mr.")
                     .CheckProperty(x => x.IsGoldMember, true)
                     .CheckProperty(x => x.MemberSince, DateTimeOffset.Now)
@@ -156,8 +157,8 @@ namespace NHibernateDemo
             using (var tx = session.BeginTransaction())
             {
                 var customer = session.Load<Customer>(newId);
-                customer.Name = "Jane Doe";
-                customer.Name = "John Smith";
+                customer.FullName = "Jane Doe";
+                customer.FullName = "John Smith";
 //                session.Update(customer);
                 Console.WriteLine("Reloaded:");
                 Console.WriteLine(customer);
@@ -169,7 +170,7 @@ namespace NHibernateDemo
         {
             var customer = new Customer
                                {
-                                   Name = "John Smith",
+                                   FullName = "John Smith",
                                    MemberSince = DateTimeOffset.Now,
                                    Rating = 2d/3,
                                    Address = CreateAddress()
@@ -226,7 +227,11 @@ namespace NHibernateDemo
                                         });
             cfg.SessionFactoryName("MedAssets");
             cfg.SessionFactory().GenerateStatistics();
-            cfg.AddAssembly(typeof (Customer).Assembly);
+//            cfg.AddAssembly(typeof (Customer).Assembly);
+
+            cfg = Fluently.Configure(cfg)
+                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
+                    .BuildConfiguration();
         }
 
         static void ExportDbSchema()

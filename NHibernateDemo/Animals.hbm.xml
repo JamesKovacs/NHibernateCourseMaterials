@@ -6,7 +6,7 @@
     <id name="Id">
       <generator class="guid.comb"/>
     </id>
-    <property name="Name"/>
+    <property name="FullName"/>
   </class>
   <joined-subclass name="Mammal" abstract="true" extends="Animal">
     <key column="AnimalId" />

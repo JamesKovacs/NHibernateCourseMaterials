@@ -55,9 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomerMap.cs" />
+    <Compile Include="OrderMap.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="Animal.cs" />
     <Compile Include="LineItem.cs" />
+    <Compile Include="LineItemMap.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Program.cs" />
