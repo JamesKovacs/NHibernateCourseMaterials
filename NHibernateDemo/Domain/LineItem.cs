@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernateDemo
+namespace NHibernateDemo.Domain
 {
     public class LineItem : IEquatable<LineItem>
     {

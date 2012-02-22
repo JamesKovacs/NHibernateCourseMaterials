@@ -1,8 +1,7 @@
 using System;
-using System.Linq;
 using Iesi.Collections.Generic;
 
-namespace NHibernateDemo
+namespace NHibernateDemo.Domain
 {
     public class Customer : IEquatable<Customer>
     {

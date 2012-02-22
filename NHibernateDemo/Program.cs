@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using FluentNHibernate;
+using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
+using FluentNHibernate.Conventions;
+using FluentNHibernate.Conventions.AcceptanceCriteria;
+using FluentNHibernate.Conventions.Inspections;
+using FluentNHibernate.Conventions.Instances;
 using FluentNHibernate.Testing;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NHibernate;
@@ -11,6 +18,7 @@ using NHibernate.Driver;
 using NHibernate.Impl;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
+using NHibernateDemo.Domain;
 
 namespace NHibernateDemo
 {
@@ -229,8 +237,14 @@ namespace NHibernateDemo
             cfg.SessionFactory().GenerateStatistics();
 //            cfg.AddAssembly(typeof (Customer).Assembly);
 
+            var autoMapCfg = new CustomAutomappingConfiguration();
+            var persistenceModel = AutoMap.AssemblyOf<Customer>(autoMapCfg)
+                                        .Conventions.AddFromAssemblyOf<Customer>();
+//                                    .Override<Customer>(x => x.HasMany(m => m.Orders)
+//                                        .Cascade.AllDeleteOrphan());
             cfg = Fluently.Configure(cfg)
-                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
+//                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
+                    .Mappings(x => x.AutoMappings.Add(persistenceModel))
                     .BuildConfiguration();
         }
 
@@ -244,9 +258,53 @@ namespace NHibernateDemo
         }
     }
 
-    public class ShippingMethod
+    class CustomAutomappingConfiguration : DefaultAutomappingConfiguration
     {
-        public virtual int Id { get; set; }
-        public virtual string Name { get; set; }
+        public override bool ShouldMap(Type type)
+        {
+            return type.Namespace != null && 
+                    type.Namespace.StartsWith("NHibernateDemo.Domain");
+        }
+
+        public override bool IsComponent(Type type)
+        {
+            return type == typeof (Location);
+        }
+    }
+
+    public class PrimaryKeyConvention : IIdConvention
+    {
+        public void Apply(IIdentityInstance instance)
+        {
+            instance.Column(instance.EntityType.Name + "Id");
+        }
+    }
+
+    public class HasManyCascadeConvention : IHasManyConvention
+    {
+        public void Apply(IOneToManyCollectionInstance instance)
+        {
+            instance.Cascade.AllDeleteOrphan();
+        }
+    }
+
+    public class ReferencesCascadeConvention : IReferenceConvention
+    {
+        public void Apply(IManyToOneInstance instance)
+        {
+            instance.Cascade.SaveUpdate();
+        }
+    }
+
+    public class CustomForeignKeyConvention : ForeignKeyConvention
+    {
+        protected override string GetKeyName(Member property, Type type)
+        {
+            if(property == null)
+            {
+                return type.Name + "Key";
+            }
+            return property.Name + "Key";
+        }
     }
 }

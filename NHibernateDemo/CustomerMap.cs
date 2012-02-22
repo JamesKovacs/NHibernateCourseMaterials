@@ -1,4 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
+using NHibernateDemo.Domain;
 
 namespace NHibernateDemo
 {

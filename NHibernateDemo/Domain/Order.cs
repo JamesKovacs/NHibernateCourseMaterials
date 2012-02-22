@@ -1,7 +1,7 @@
 using System;
 using Iesi.Collections.Generic;
 
-namespace NHibernateDemo
+namespace NHibernateDemo.Domain
 {
     public class Order : IEquatable<Order>
     {

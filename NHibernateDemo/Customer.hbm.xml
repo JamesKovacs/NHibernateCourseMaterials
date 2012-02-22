@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    assembly="NHibernateDemo"
-                   namespace="NHibernateDemo">
+                   namespace="NHibernateDemo.Domain">
   <class name="Customer">
     <id name="Id">
       <generator class="guid.comb"/>
