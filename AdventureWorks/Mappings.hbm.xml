@@ -15,7 +15,7 @@
     <property name="SalesPerson"/>
     <property name="EmailAddress"/>
     <property name="Phone"/>
-    <set name="CustomerAddresses" cascade="all-delete-orphan">
+    <set name="CustomerAddresses" cascade="all-delete-orphan" lazy="extra">
       <key column="CustomerID" />
       <one-to-many class="CustomerAddress"/>
     </set>

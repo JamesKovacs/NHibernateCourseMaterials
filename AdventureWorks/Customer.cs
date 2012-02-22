@@ -1,4 +1,3 @@
-using System;
 using Iesi.Collections.Generic;
 
 namespace AdventureWorks
@@ -26,23 +25,5 @@ namespace AdventureWorks
         {
             return string.Format("Id: {0}, FirstName: {1}, LastName: {2}", Id, FirstName, LastName);
         }
-    }
-
-    public class CustomerAddress
-    {
-        public virtual Guid Id { get; set; }
-        public virtual string AddressType { get; set; }
-        public virtual Address Address { get; set; }
-    }
-
-    public class Address
-    {
-        public virtual int Id { get; set; }
-        public virtual string AddressLine1 { get; set; }
-        public virtual string AddressLine2 { get; set; }
-        public virtual string City { get; set; }
-        public virtual string StateProvince { get; set; }
-        public virtual string CountryRegion { get; set; }
-        public virtual string PostalCode { get; set; }
     }
 }

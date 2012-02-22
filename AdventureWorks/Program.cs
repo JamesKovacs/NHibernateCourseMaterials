@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
@@ -7,6 +9,7 @@ using NHibernate.Cfg;
 using NHibernate.Criterion;
 using NHibernate.Dialect;
 using NHibernate.Driver;
+using NHibernate.Engine;
 using NHibernate.Linq;
 using NHibernate.Util;
 
@@ -30,17 +33,69 @@ namespace AdventureWorks
 //                Criteria(session);
 //                CriteriaQueryOver(session);
 //                Linq(session);
-//                var customers = session.CreateQuery("from Customer c where size(c.CustomerAddresses) > 0").List<Customer>();
-                var customers = from c in session.Query<Customer>()
-                                where c.CustomerAddresses.Count > 0
-                                select c;
-                Console.WriteLine(customers.First().CustomerAddresses.Count());
-//                Console.WriteLine(customer.CustomerAddresses.First().AddressType);
+
+                Paging(session);
+                MultiCriteria(session);
+                MultiQuery(session);
+                Futures(session);
+//                Aggregation(session);
+                CollectionFilters(session);
+                ExtraLazyCollections(session);
+                LazyProperties(session);
                 tx.Commit();
             }
 
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void Paging(ISession session)
+        {
+        }
+
+        static void MultiCriteria(ISession session)
+        {
+        }
+
+        static void MultiQuery(ISession session)
+        {
+        }
+
+        static void Futures(ISession session)
+        {
+        }
+
+        static void Aggregation(ISession session)
+        {
+//                var customers = session.CreateQuery("from Customer c where size(c.CustomerAddresses) > 0").List<Customer>();
+//                var customers = from c in session.Query<Customer>()
+//                                where c.CustomerAddresses.Count > 0
+//                                select c;
+//                Console.WriteLine(customers.Count());
+            var stats = session.CreateQuery("select c.FirstName, count(c) from Customer c group by c.FirstName having count(c) > 10 order by count(c) asc")
+                .List<object[]>();
+//                var stats = from c in session.Query<Customer>()
+//                            group c by c.FirstName into grp
+//                            where grp.Count() > 10
+//                            orderby grp.Count() ascending 
+//                            select new{grp.Key, Count=grp.Count()};
+            foreach (var stat in stats)
+            {
+                Console.WriteLine("{0}: {1}", stat[0], stat[1]);
+//                    Console.WriteLine("{0}: {1}", stat.Key, stat.Count);
+            }
+        }
+        
+        static void CollectionFilters(ISession session)
+        {
+        }
+
+        static void ExtraLazyCollections(ISession session)
+        {
+        }
+
+        static void LazyProperties(ISession session)
+        {
         }
 
         static void GetVsLoad(ISession session)
@@ -122,7 +177,6 @@ namespace AdventureWorks
                                             x.Dialect<MsSql2008Dialect>();
                                             x.IsolationLevel = IsolationLevel.ReadCommitted;
                                             x.Timeout = 10;
-                                            x.LogSqlInConsole = true;
                                         });
             cfg.SessionFactoryName("AdventureWorks");
             cfg.SessionFactory().GenerateStatistics();
