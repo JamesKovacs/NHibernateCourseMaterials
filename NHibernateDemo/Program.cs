@@ -60,16 +60,22 @@ namespace NHibernateDemo
             using (var tx = session.BeginTransaction())
             {
                 var customers = session.QueryOver<Customer>().List();
-                var customer = customers.First();
-                foreach (var order in customer.Orders)
+                var customer1 = customers.First();
+                var customer2 = customers.Last();
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer1.Orders));
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer2.Orders));
+                foreach (var order in customer1.Orders)
                 {
                     Console.WriteLine(order);
                 }
-                var customer2 = customers.Last();
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer1.Orders));
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer2.Orders));
                 foreach (var order in customer2.Orders)
                 {
                     Console.WriteLine(order);
                 }
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer1.Orders));
+                Console.WriteLine(NHibernateUtil.IsInitialized(customer2.Orders));
                 tx.Commit();
             }
         }
