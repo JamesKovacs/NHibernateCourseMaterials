@@ -44,5 +44,10 @@ namespace NHibernateDemo.Domain
         {
             return !Equals(left, right);
         }
+
+        public override string ToString()
+        {
+            return string.Format("OrderedOn: {0}", OrderedOn);
+        }
     }
 }

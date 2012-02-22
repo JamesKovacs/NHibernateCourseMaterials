@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="AdventureWorks"
+                   namespace="AdventureWorks">
+<!--  <query name="FirstNameCountQuery">-->
+<!--    <query-param name="mincount" type="int"/>-->
+<!--    select c.FirstName, count(c)-->
+<!--    from Customer c-->
+<!--    group by c.FirstName-->
+<!--    having count(c) > :mincount-->
+<!--    order by count(c) asc-->
+<!--  </query>-->
+  <sql-query name="FirstNameCountQuery">
+    <query-param name="mincount" type="int"/>
+select customer0_.FirstName         as col_0_0_,
+       count(customer0_.CustomerID) as col_1_0_
+from   SalesLT.Customer customer0_
+group  by customer0_.FirstName
+having count(customer0_.CustomerID) > :mincount
+order  by count(customer0_.CustomerID) asc
+  </sql-query>
+</hibernate-mapping>

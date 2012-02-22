@@ -11,8 +11,8 @@
     <property name="MiddleName"/>
     <property name="LastName"/>
     <property name="Suffix"/>
-    <property name="CompanyName"/>
-    <property name="SalesPerson"/>
+    <property name="CompanyName" lazy="true"/>
+    <property name="SalesPerson" lazy="true"/>
     <property name="EmailAddress"/>
     <property name="Phone"/>
     <set name="CustomerAddresses" cascade="all-delete-orphan" lazy="extra">

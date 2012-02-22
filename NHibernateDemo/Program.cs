@@ -35,9 +35,58 @@ namespace NHibernateDemo
 //            ImmutableData();
 //            Relationships();
 //            Inheritance();
-            PersistenceSpecs();
+//            PersistenceSpecs();
+//            InsertBatching();
+            CollectionBatchSize();
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void CollectionBatchSize()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using(var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var customer = CreateCustomer();
+                customer.AddOrder(CreateOrder());
+                session.Save(customer);
+                var customer1 = CreateCustomer();
+                customer1.AddOrder(CreateOrder());
+                session.Save(customer1);
+                tx.Commit();
+            }
+            using(var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var customers = session.QueryOver<Customer>().List();
+                var customer = customers.First();
+                foreach (var order in customer.Orders)
+                {
+                    Console.WriteLine(order);
+                }
+                var customer2 = customers.Last();
+                foreach (var order in customer2.Orders)
+                {
+                    Console.WriteLine(order);
+                }
+                tx.Commit();
+            }
+        }
+
+        static void InsertBatching()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using(var session = sessionFactory.OpenSession())
+            using(var tx = session.BeginTransaction())
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    var customer = CreateCustomer();
+                    session.Save(customer);
+                }
+                tx.Commit();
+            }
         }
 
         static void PersistenceSpecs()
@@ -232,6 +281,7 @@ namespace NHibernateDemo
                                             x.Dialect<MsSql2008Dialect>();
                                             x.IsolationLevel = IsolationLevel.ReadCommitted;
                                             x.Timeout = 10;
+                                            x.BatchSize = 100;
                                         });
             cfg.SessionFactoryName("MedAssets");
             cfg.SessionFactory().GenerateStatistics();

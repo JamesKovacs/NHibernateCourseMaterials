@@ -34,14 +34,14 @@ namespace AdventureWorks
 //                CriteriaQueryOver(session);
 //                Linq(session);
 
+//                CollectionFilters(session);
+//                ExtraLazyCollections(session);
 //                Paging(session);
+//                Aggregation(session);
+//                LazyProperties(session);
 //                MultiCriteria(session);
 //                MultiQuery(session);
 //                Futures(session);
-//                Aggregation(session);
-//                CollectionFilters(session);
-//                ExtraLazyCollections(session);
-//                LazyProperties(session);
                 tx.Commit();
             }
 
@@ -51,10 +51,35 @@ namespace AdventureWorks
 
         static void Paging(ISession session)
         {
+            var customers = from c in session.Query<Customer>()
+                            where c.FirstName.StartsWith("J")
+                            orderby c.LastName
+                            select c;
+            var pageSize = 10;
+            var pageNumber = 1;
+            var someCustomers = customers.Skip(pageSize*pageNumber)
+                                         .Take(pageSize)
+                                         .ToList();
+            foreach (var someCustomer in someCustomers)
+            {
+                Console.WriteLine(someCustomer);
+            }
+//            var customers = session.CreateCriteria<Customer>()
+//                                   .SetFirstResult(10)
+//                                   .SetMaxResults(10)
+//                                   .List<Customer>();
+//            foreach (var customer in customers)
+//            {
+//                Console.WriteLine(customer);
+//            }
         }
 
         static void MultiCriteria(ISession session)
         {
+//            var multi = session.CreateMultiCriteria()
+//                .Add(session.CreateCriteria<Customer>())
+//                .Add(session.CreateCriteria<Address>());
+//            multi.List()
         }
 
         static void MultiQuery(ISession session)
@@ -63,15 +88,30 @@ namespace AdventureWorks
 
         static void Futures(ISession session)
         {
+            var query1 = (from c in session.Query<Customer>()
+                          where c.FirstName == "John"
+                          select c)
+                          .ToFuture();
+            var query2 = (from a in session.Query<Address>()
+                         select a)
+                         .ToFuture();
+            foreach (var customer in query1.ToList())
+            {
+                Console.WriteLine(customer);
+            }
+            foreach (var address in query2.ToList())
+            {
+                Console.WriteLine(address);
+            }
         }
 
         static void Aggregation(ISession session)
         {
-//                var customers = session.CreateQuery("from Customer c where size(c.CustomerAddresses) > 0").List<Customer>();
-//                var customers = from c in session.Query<Customer>()
-//                                where c.CustomerAddresses.Count > 0
-//                                select c;
-//                Console.WriteLine(customers.Count());
+//            var customers = from c in session.Query<Customer>()
+//                            where c.CustomerAddresses.Count > 0
+//                            select c;
+//            var customers = session.CreateQuery("from Customer c where size(c.CustomerAddresses) > 0").List<Customer>();
+//            Console.WriteLine(customers.Count());
 
 //            var stats = from c in session.Query<Customer>()
 //                        group c by c.FirstName into grp
@@ -84,23 +124,63 @@ namespace AdventureWorks
 //            }
 
 //            var stats = session.CreateQuery("select c.FirstName, count(c) from Customer c group by c.FirstName having count(c) > 10 order by count(c) asc")
-//                                .List<object[]>();
-//            foreach (var stat in stats)
-//            {
-//                Console.WriteLine("{0}: {1}", stat[0], stat[1]);
-//            }
+//                               .List<object[]>();
+            var stats = session.GetNamedQuery("FirstNameCountQuery")
+                               .SetParameter("mincount", 12)
+                               .List<object[]>();
+            foreach (var stat in stats)
+            {
+                Console.WriteLine("{0}: {1}", stat[0], stat[1]);
+            }
         }
         
         static void CollectionFilters(ISession session)
         {
+            var customers = from c in session.Query<Customer>()
+                            where c.CustomerAddresses.Count > 1
+                            select c;
+            var customer = customers.First();
+            Console.WriteLine(customer);
+            Console.WriteLine(NHibernateUtil.IsInitialized(customer.CustomerAddresses));
+            var count = session.CreateFilter(customer.CustomerAddresses, "select count(*)")
+                                  .UniqueResult<long>();
+            Console.WriteLine("Number of Addresses {0}", count);
+            Console.WriteLine(NHibernateUtil.IsInitialized(customer.CustomerAddresses));
+
+//            var customerAddresses = customer.CustomerAddresses;
+            var customerAddresses = session.CreateFilter(customer.CustomerAddresses, "")
+                                            .SetFirstResult(1)
+                                            .SetMaxResults(1)
+                                            .List<CustomerAddress>();
+            foreach (var customerAddress in customerAddresses)
+            {
+                Console.WriteLine(customerAddress.AddressType);
+                Console.WriteLine(customerAddress.Address);
+            }
+            Console.WriteLine(NHibernateUtil.IsInitialized(customer.CustomerAddresses));
         }
 
         static void ExtraLazyCollections(ISession session)
         {
+            var customers = from c in session.Query<Customer>()
+                            where c.CustomerAddresses.Count > 1
+                            select c;
+            var customer = customers.First();
+            Console.WriteLine(customer);
+            Console.WriteLine(NHibernateUtil.IsInitialized(customer.CustomerAddresses));
+            Console.WriteLine("Number of Addresses: {0}", customer.CustomerAddresses.Count());
+            Console.WriteLine(NHibernateUtil.IsInitialized(customer.CustomerAddresses));
         }
 
         static void LazyProperties(ISession session)
         {
+            var customer = session.Get<Customer>(1);
+            Console.WriteLine(customer);
+            Console.WriteLine(NHibernateUtil.IsPropertyInitialized(customer, "SalesPerson"));
+            Console.WriteLine(customer.CompanyName);
+            Console.WriteLine(NHibernateUtil.IsPropertyInitialized(customer, "SalesPerson"));
+            Console.WriteLine(customer.SalesPerson);
+            Console.WriteLine(NHibernateUtil.IsPropertyInitialized(customer, "SalesPerson"));
         }
 
         static void GetVsLoad(ISession session)

@@ -18,7 +18,7 @@
       <property name="Province"/>
       <property name="Country"/>
     </component>
-    <set name="Orders" cascade="all-delete-orphan" inverse="true">
+    <set name="Orders" cascade="all-delete-orphan" inverse="true" batch-size="10">
       <key column="CustomerId"/>
       <one-to-many class="Order"/>
     </set>
