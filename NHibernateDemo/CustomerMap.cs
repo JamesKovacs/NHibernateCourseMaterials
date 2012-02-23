@@ -22,7 +22,7 @@ namespace NHibernateDemo
 //                                              m.Map(x => x.Country);
 //                                          });
             Component(x => x.Address);
-            HasMany(x => x.Orders).Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.Orders).Cascade.AllDeleteOrphan().Inverse().BatchSize(10);
         } 
     }
 

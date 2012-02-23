@@ -6,6 +6,6 @@
     <id name="Id">
       <generator class="guid.comb"/>
     </id>
-    <property name="ModuleCode" length="10000" lazy="true"/>
+    <property name="ModuleCode" length="10000" />
   </class>
 </hibernate-mapping>

@@ -295,8 +295,9 @@ namespace NHibernateDemo
 
             var autoMapCfg = new CustomAutomappingConfiguration();
             var persistenceModel = AutoMap.AssemblyOf<Customer>(autoMapCfg)
-                                        .Conventions.AddFromAssemblyOf<Customer>();
-//                                    .Override<Customer>(x => x.HasMany(m => m.Orders)
+                                        .Conventions.AddFromAssemblyOf<Customer>()
+                                        .Override<Customer>(x => x.HasMany(m => m.Orders)
+                                                                  .BatchSize(10));
 //                                        .Cascade.AllDeleteOrphan());
             cfg = Fluently.Configure(cfg)
 //                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
