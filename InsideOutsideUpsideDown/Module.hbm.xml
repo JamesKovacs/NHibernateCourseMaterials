@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="InsideOutsideUpsideDown"
+                   namespace="InsideOutsideUpsideDown">
+  <class name="Module">
+    <id name="Id">
+      <generator class="guid.comb"/>
+    </id>
+    <property name="ModuleCode" length="10000" lazy="true"/>
+  </class>
+</hibernate-mapping>
