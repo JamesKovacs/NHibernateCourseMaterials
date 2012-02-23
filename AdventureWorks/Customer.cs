@@ -7,6 +7,8 @@ namespace AdventureWorks
         public Customer()
         {
             CustomerAddresses = new HashedSet<CustomerAddress>();
+            PasswordHash = "HASH";
+            PasswordSalt = "SALT";
         }
 
         public virtual int Id { get; set; }
@@ -19,6 +21,8 @@ namespace AdventureWorks
         public virtual string SalesPerson { get; set; }
         public virtual string EmailAddress { get; set; }
         public virtual string Phone { get; set; }
+        public virtual string PasswordHash { get; set; }
+        public virtual string PasswordSalt { get; set; }
         public virtual ISet<CustomerAddress> CustomerAddresses { get; set; }
         
         public override string ToString()

@@ -31,7 +31,7 @@ namespace InsideOutsideUpsideDown
             using(var session = sessionFactory.OpenSession())
             using(var tx = session.BeginTransaction())
             {
-                var module = new Module {ModuleCode = "class Foo; end;"};
+                var module = new Module { ModuleCode = new ModuleCode { Value = "class Foo; end;" } };
                 session.Save(module);
                 tx.Commit();
             }
@@ -39,8 +39,9 @@ namespace InsideOutsideUpsideDown
             using(var tx = session.BeginTransaction())
             {
                 var module = session.QueryOver<Module>().List().First();
-//                Console.WriteLine(module.ModuleCode);
                 Console.WriteLine(module.ModuleXml);
+//                Console.WriteLine(module.ModuleCode);
+//                Console.WriteLine(module.ModuleXml);
                 tx.Commit();
             }
             Console.WriteLine("Press <ENTER> to exit...");

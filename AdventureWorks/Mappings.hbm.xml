@@ -3,6 +3,7 @@
                    assembly="AdventureWorks"
                    namespace="AdventureWorks">
   <class name="Customer" schema="SalesLT">
+    <cache usage="read-write" region="Entities"/>
     <id name="Id" column="CustomerID">
       <generator class="identity"/>
     </id>
@@ -15,13 +16,17 @@
     <property name="SalesPerson" lazy="true"/>
     <property name="EmailAddress"/>
     <property name="Phone"/>
+    <property name="PasswordHash"/>
+    <property name="PasswordSalt"/>
     <set name="CustomerAddresses" cascade="all-delete-orphan" lazy="extra">
+      <cache usage="read-write" region="Entities"/>
       <key column="CustomerID" />
       <one-to-many class="CustomerAddress"/>
     </set>
   </class>
 
   <class name="CustomerAddress" schema="SalesLT">
+    <cache usage="read-write" region="Entities"/>
     <id name="Id" column="rowguid">
       <generator class="guid"/>
     </id>
@@ -30,6 +35,7 @@
   </class>
 
   <class name="Address" schema="SalesLT">
+    <cache usage="read-write" region="Entities"/>
     <id name="Id" column="AddressID">
       <generator class="identity"/>
     </id>

@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
 using NHibernate;
+using NHibernate.Cache;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
 using NHibernate.Dialect;
@@ -45,8 +46,52 @@ namespace AdventureWorks
                 tx.Commit();
             }
 
+            Caching();
+
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void Caching()
+        {
+            using(var session = sessionFactory.OpenSession())
+            using(var tx = session.BeginTransaction())
+            {
+//                var customers = from c in session.Query<Customer>()
+//                                where c.CustomerAddresses.Count > 1
+//                                select c;
+//                foreach (var customer in customers.Cacheable())
+//                {
+//                    Console.WriteLine(customer.CustomerAddresses.FirstOrDefault());
+//                }
+                var numberOfCustomers = session.CreateQuery("select count(c) from Customer c")
+                                               .SetCacheable(true)
+                                               .UniqueResult<long>();
+                Console.WriteLine(numberOfCustomers);
+                tx.Commit();
+            }
+            using(var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                session.Save(new Customer {FirstName = "Bob", LastName = "Smith"});
+                tx.Commit();
+            }
+            using(var session = sessionFactory.OpenSession())
+            using(var tx = session.BeginTransaction())
+            {
+//                var customers = from c in session.Query<Customer>()
+//                                where c.CustomerAddresses.Count > 1
+//                                select c;
+//                foreach (var customer in customers.Cacheable())
+//                {
+//                    Console.WriteLine(customer.CustomerAddresses.FirstOrDefault());
+//                }
+                var numberOfCustomers = session.CreateQuery("select count(c) from Customer c")
+                                               .SetCacheable(true)
+                                               .UniqueResult<long>();
+                Console.WriteLine(numberOfCustomers);
+                tx.Commit();
+            }
         }
 
         static void Paging(ISession session)
@@ -264,6 +309,11 @@ namespace AdventureWorks
                                             x.Timeout = 10;
                                         });
             cfg.SessionFactoryName("AdventureWorks");
+            cfg.Cache(x =>
+                          {
+                              x.Provider<HashtableCacheProvider>();
+                              x.UseQueryCache = true;
+                          });
             cfg.SessionFactory().GenerateStatistics();
             cfg.AddAssembly(typeof (Customer).Assembly);
         }
