@@ -6,6 +6,7 @@
     <id name="Id">
       <generator class="guid.comb"/>
     </id>
+    <property name="Total" type="MoneyType"/>
     <property name="OrderedOn"/>
     <many-to-one name="Customer" class="Customer" column="CustomerId" cascade="save-update"/>
     <set name="LineItems" cascade="all-delete-orphan">

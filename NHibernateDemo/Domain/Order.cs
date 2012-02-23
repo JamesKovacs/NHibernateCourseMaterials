@@ -11,6 +11,7 @@ namespace NHibernateDemo.Domain
         }
 
         public virtual Guid Id { get; set; }
+        public virtual Money Total { get; set; }
         public virtual DateTimeOffset OrderedOn { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual ISet<LineItem> LineItems { get; set; }

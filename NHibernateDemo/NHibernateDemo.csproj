@@ -56,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomerMap.cs" />
+    <Compile Include="Domain\Money.cs" />
+    <Compile Include="FooInterceptor.cs" />
+    <Compile Include="MoneyType.cs" />
     <Compile Include="OrderMap.cs" />
     <Compile Include="Domain\Customer.cs" />
     <Compile Include="Animal.cs" />

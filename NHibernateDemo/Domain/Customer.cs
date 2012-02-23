@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 using Iesi.Collections.Generic;
 
 namespace NHibernateDemo.Domain
@@ -23,6 +24,7 @@ namespace NHibernateDemo.Domain
         public virtual ISet<Order> Orders { get; set; }
 
         public virtual Colour FavouriteColour { get; set; }
+        public virtual XDocument Description { get; set; }
 
         // Options#1: Use C#
 //        public virtual Order LastOrder { get { return Orders.Last(); } }

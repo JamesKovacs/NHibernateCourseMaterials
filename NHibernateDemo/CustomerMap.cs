@@ -15,6 +15,7 @@ namespace NHibernateDemo
             Map(x => x.Notes).Length(4000);
             Map(x => x.Rating);
             Map(x => x.FavouriteColour);
+            Map(x => x.Description);
 //            Component(x => x.Address, m =>
 //                                          {
 //                                              m.Map(x => x.Street);

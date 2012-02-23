@@ -39,10 +39,23 @@ namespace NHibernateDemo
 //            PersistenceSpecs();
 //            InsertBatching();
 //            CollectionBatchSize();
-            MappingEnums();
+//            MappingEnums();
+            MappingIUserType();
 
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void MappingIUserType()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using(var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var order = CreateOrder();
+                session.Save(order);
+                tx.Commit();
+            }
         }
 
         static void MappingEnums()
@@ -203,6 +216,7 @@ namespace NHibernateDemo
         {
             var order = new Order
                             {
+                                Total = new Money(42.42m, "CA"),
                                 OrderedOn = DateTimeOffset.Now,
                                 LineItems =
                                     {
