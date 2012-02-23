@@ -18,6 +18,7 @@ using NHibernate.Driver;
 using NHibernate.Impl;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
+using NHibernate.Type;
 using NHibernateDemo.Domain;
 
 namespace NHibernateDemo
@@ -37,9 +38,24 @@ namespace NHibernateDemo
 //            Inheritance();
 //            PersistenceSpecs();
 //            InsertBatching();
-            CollectionBatchSize();
+//            CollectionBatchSize();
+            MappingEnums();
+
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void MappingEnums()
+        {
+            sessionFactory = cfg.BuildSessionFactory();
+            using(var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var customer = CreateCustomer();
+                customer.FavouriteColour = Colour.Green;
+                session.Save(customer);
+                tx.Commit();
+            }
         }
 
         static void CollectionBatchSize()
@@ -300,8 +316,8 @@ namespace NHibernateDemo
                                                                   .BatchSize(10));
 //                                        .Cascade.AllDeleteOrphan());
             cfg = Fluently.Configure(cfg)
-//                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
-                    .Mappings(x => x.AutoMappings.Add(persistenceModel))
+                    .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Customer>())
+//                    .Mappings(x => x.AutoMappings.Add(persistenceModel))
                     .BuildConfiguration();
         }
 
@@ -313,6 +329,15 @@ namespace NHibernateDemo
 //            var updater = new SchemaUpdate(cfg);
 //            updater.Execute(true, true);
         }
+    }
+
+    public enum Colour
+    {
+        Red, Orange, Yellow, Green, Blue, Purple
+    }
+
+    public class ColourEnumType : EnumStringType<Colour>
+    {
     }
 
     class CustomAutomappingConfiguration : DefaultAutomappingConfiguration

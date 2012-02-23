@@ -22,6 +22,8 @@ namespace NHibernateDemo.Domain
 
         public virtual ISet<Order> Orders { get; set; }
 
+        public virtual Colour FavouriteColour { get; set; }
+
         // Options#1: Use C#
 //        public virtual Order LastOrder { get { return Orders.Last(); } }
         // Option#2: Use a formula in the hbm.xml file
