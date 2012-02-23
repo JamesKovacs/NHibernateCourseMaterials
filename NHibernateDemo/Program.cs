@@ -15,6 +15,8 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
+using NHibernate.Event;
+using NHibernate.Event.Default;
 using NHibernate.Impl;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
@@ -40,10 +42,50 @@ namespace NHibernateDemo
 //            InsertBatching();
 //            CollectionBatchSize();
 //            MappingEnums();
-            MappingIUserType();
+//            MappingIUserType();
+//            Interceptors();
+            EventListeners();
 
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
+        }
+
+        static void EventListeners()
+        {
+            cfg.EventListeners.DeleteEventListeners = new IDeleteEventListener[]
+                                                          {
+                                                              new SoftDeleteEventListener(),
+                                                              new DefaultDeleteEventListener()
+                                                          };
+            sessionFactory = cfg.BuildSessionFactory();
+            var customer = CreateCustomer();
+
+            using(var session = sessionFactory.OpenSession())
+            using(var tx = session.BeginTransaction())
+            {
+                session.Save(customer);
+                tx.Commit();
+            }
+            using(var session = sessionFactory.OpenSession())
+            using(var tx = session.BeginTransaction())
+            {
+                session.Delete(customer);
+                tx.Commit();
+            }
+        }
+
+        static void Interceptors()
+        {
+            // Session-level interceptor
+            sessionFactory = cfg.BuildSessionFactory();
+            var session = sessionFactory.OpenSession(new FooInterceptor());
+            session.Dispose();
+
+            // SessionFactory-level interceptor
+            cfg.Interceptor = new ChainedInterceptor(new FooInterceptor());
+            sessionFactory = cfg.BuildSessionFactory();
+            var session2 = sessionFactory.OpenSession();
+            session2.Dispose();
         }
 
         static void MappingIUserType()
